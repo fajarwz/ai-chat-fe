@@ -14,7 +14,7 @@
             <label class="block">Name</label>
             <Field name="name" v-model="form.name" class="w-full p-2 border rounded" />
             <ErrorMessage name="name" class="text-red-500 text-sm" />
-            <p v-if="serverErrors.name" class="text-red-500 text-sm">{{ serverErrors.name.join(' ') }}</p>
+            <p v-if="serverErrors.name" class="text-red-500 text-sm">{{ serverErrors.name.join(" ") }}</p>
           </div>
 
           <div class="w-96 flex flex-col gap-3">
@@ -34,27 +34,27 @@
 
 <script setup>
 import AuthLayout from "@/layouts/AuthLayout.vue";
-import { onMounted, ref } from 'vue';
-import { Form, Field, ErrorMessage } from 'vee-validate';
-import { useRouter } from 'vue-router';
-import config from '@/config';
-import * as yup from 'yup';
+import { onMounted, ref } from "vue";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import { useRouter } from "vue-router";
+import config from "@/config";
+import * as yup from "yup";
 
 const router = useRouter();
 const serverErrors = ref({});
 const loading = ref(false);
 
 const form = ref({
-  name: '',
-  email: '',
+  name: "",
+  email: "",
 });
 
 const fetchUserData = async () => {
   try {
     const response = await fetch(`${config.api.baseUrl}/user/profile`, {
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
 
@@ -63,17 +63,17 @@ const fetchUserData = async () => {
       form.value = {
         email: json.data.email,
         name: json.data.name,
-      }
+      };
     }
   } catch (error) {
-    console.error('Error fetching user data:', error);
+    console.error("Error fetching user data:", error);
   }
 };
 
 onMounted(fetchUserData);
 
 const schema = yup.object({
-  name: yup.string().label('Name').required(),
+  name: yup.string().label("Name").required(),
 });
 
 const onSubmit = async (values) => {
@@ -82,10 +82,10 @@ const onSubmit = async (values) => {
 
   try {
     const response = await fetch(`${config.api.baseUrl}/user/profile`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(values),
     });
@@ -93,8 +93,9 @@ const onSubmit = async (values) => {
     const data = await response.json();
 
     if (response.ok) {
-      alert('Profile updated successfully!');
-      router.push('/my-profile');
+      alert("Profile updated successfully!");
+      localStorage.setItem("user", JSON.stringify(data.data));
+      router.push("/my-profile");
     } else {
       serverErrors.value = {
         ...data.errors,
@@ -107,5 +108,4 @@ const onSubmit = async (values) => {
     loading.value = false;
   }
 };
-
 </script>

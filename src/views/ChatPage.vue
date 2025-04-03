@@ -45,11 +45,11 @@
 
 <script setup>
 import AuthLayout from "@/layouts/AuthLayout.vue";
-import { ref, nextTick, onMounted } from 'vue';
-import { marked } from 'marked';
+import { ref, nextTick, onMounted } from "vue";
+import { marked } from "marked";
 import config from "@/config";
-import * as yup from 'yup';
-import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 const schema = yup.object({
   message: yup.string().label("Message").required("Please type your question."),
@@ -62,14 +62,14 @@ const fetchChatHistory = async () => {
   try {
     const response = await fetch(`${config.api.baseUrl}/chat/history`, {
       headers: { 
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
       }
     });
     const json = await response.json();
     messages.value = json.data;
     await nextTick(scrollToBottom);
   } catch (error) {
-    console.error('Failed to load chat history:', error);
+    console.error("Failed to load chat history:", error);
   }
 };
 
@@ -77,11 +77,11 @@ onMounted(fetchChatHistory);
 
 const sendMessage = async (values, { resetForm }) => {
   // Add user message
-  const userMsg = { role: 'user', content: values.message, status: 'complete' };
+  const userMsg = { role: "user", content: values.message, status: "complete" };
   messages.value.push(userMsg);
 
   // AI placeholder
-  const aiMsg = { role: 'assistant', content: '', status: 'thinking' };
+  const aiMsg = { role: "assistant", content: "", status: "thinking" };
   messages.value.push(aiMsg);
 
   resetForm();
@@ -90,15 +90,15 @@ const sendMessage = async (values, { resetForm }) => {
   
   try {
     const response = await fetch(`${config.api.baseUrl}/chat`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({ message: userMsg.content }),
     });
 
-    aiMsg.status = 'generating';
+    aiMsg.status = "generating";
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
@@ -112,13 +112,13 @@ const sendMessage = async (values, { resetForm }) => {
       await nextTick(scrollToBottom);
     }
 
-    aiMsg.status = 'complete';
+    aiMsg.status = "complete";
 
     messages.value = [...messages.value];
   } catch (e) {
     console.err(e);
-    aiMsg.content = '⚠️ AI service unavailable';
-    aiMsg.status = 'error';
+    aiMsg.content = "⚠️ AI service unavailable";
+    aiMsg.status = "error";
   }
 
   await nextTick(scrollToBottom);
@@ -131,5 +131,5 @@ const scrollToBottom = () => {
   });
 };
 
-const markedContent = (text) => marked.parse(text || '', { breaks: true });
+const markedContent = (text) => marked.parse(text || "", { breaks: true });
 </script>
