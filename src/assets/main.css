@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+.markdown-body {
+  background-color: unset !important;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+ul {
+  list-style-type: disc;
+}
