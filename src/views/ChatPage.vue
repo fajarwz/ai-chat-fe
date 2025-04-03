@@ -61,8 +61,10 @@ const chatBox = ref(null);
 const fetchChatHistory = async () => {
   try {
     const response = await fetch(`${config.api.baseUrl}/chat/history`, {
-      headers: { 
-        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
       }
     });
     const json = await response.json();
@@ -93,6 +95,7 @@ const sendMessage = async (values, { resetForm }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json",
         "Authorization": `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({ message: userMsg.content }),
