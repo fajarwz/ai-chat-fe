@@ -3,19 +3,19 @@
     <div class="w-96 p-6 bg-white shadow-md rounded-lg">
       <h1 class="text-2xl font-bold text-center mb-4">Login</h1>
       
-      <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors }">
+      <Form @submit="onSubmit" :validation-schema="schema">
         <p v-if="serverErrors.message" class="text-white bg-red-500 text-sm p-4 rounded mb-2">{{ serverErrors.message }}</p>
         <div class="mb-4">
           <label class="block">Email</label>
           <Field name="email" class="w-full p-2 border rounded" />
-          <p class="text-red-500 text-sm">{{ errors.email }}</p>
+          <ErrorMessage name="email" class="text-red-500 text-sm" />
           <p v-if="serverErrors.email" class="text-red-500 text-sm">{{ serverErrors.email.join(" ") }}</p>
         </div>
 
         <div class="mb-4">
           <label class="block">Password</label>
           <Field name="password" type="password" class="w-full p-2 border rounded" />
-          <p class="text-red-500 text-sm">{{ errors.password }}</p>
+          <ErrorMessage name="password" class="text-red-500 text-sm" />
           <p v-if="serverErrors.password" class="text-red-500 text-sm">{{ serverErrors.password.join(" ") }}</p>
         </div>
 
@@ -34,7 +34,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { Form, Field } from "vee-validate";
+import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import config from "@/config";
 import { useRouter } from "vue-router";

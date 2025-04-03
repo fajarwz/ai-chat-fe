@@ -1,4 +1,4 @@
-import './assets/main.css'
+import './assets/styles/main.css'
 import 'github-markdown-css/github-markdown-light.css'
 
 import { createApp } from 'vue'

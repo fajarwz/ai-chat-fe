@@ -28,11 +28,16 @@
           </div>
         </div>
 
-        <!-- Input box -->
-        <div class="py-4 mt-4 flex">
-          <textarea v-model="input" rows="2" class="flex-1 border rounded p-2 focus:outline-none" placeholder="Type your question, press Enter to send" @keydown.enter.exact.prevent="sendMessage" />
-          <button @click="sendMessage" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer">Send</button>
-        </div>
+        <Form @submit="sendMessage" :validation-schema="schema" v-slot="{ handleSubmit }">
+          <!-- Input box -->
+          <div class="py-4 mt-4 flex flex-col w-full">
+            <div class="flex flex-row w-full">
+              <Field name="message" as="textarea" rows="2" class="flex-1 border rounded p-2 focus:outline-none" placeholder="Type your question, press Enter to send" @keydown.enter.exact.prevent="handleSubmit(sendMessage)" />
+              <button type="submit" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer">Send</button>
+            </div>
+            <ErrorMessage name="message" class="text-red-500 text-sm" />
+          </div>
+        </Form>
       </div>
     </div>
   </AuthLayout>
@@ -43,9 +48,14 @@ import AuthLayout from "@/layouts/AuthLayout.vue";
 import { ref, nextTick, onMounted } from 'vue';
 import { marked } from 'marked';
 import config from "@/config";
+import * as yup from 'yup';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+
+const schema = yup.object({
+  message: yup.string().label("Message").required("Please type your question."),
+});
 
 const messages = ref([]);
-const input = ref('');
 const chatBox = ref(null);
 
 const fetchChatHistory = async () => {
@@ -65,18 +75,16 @@ const fetchChatHistory = async () => {
 
 onMounted(fetchChatHistory);
 
-const sendMessage = async () => {
-  if (!input.value.trim()) return;
-
+const sendMessage = async (values, { resetForm }) => {
   // Add user message
-  const userMsg = { role: 'user', content: input.value, status: 'complete' };
+  const userMsg = { role: 'user', content: values.message, status: 'complete' };
   messages.value.push(userMsg);
 
   // AI placeholder
   const aiMsg = { role: 'assistant', content: '', status: 'thinking' };
   messages.value.push(aiMsg);
 
-  input.value = '';
+  resetForm();
 
   await nextTick(scrollToBottom);
   
