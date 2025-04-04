@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.0",
-    "clear-cache": "^1.1.0",
     "github-markdown-css": "^5.8.1",
     "marked": "^15.0.7",
     "tailwindcss": "^4.1.0",
